@@ -8,7 +8,7 @@ const blogRouter = Router();
 blogRouter.get('/',blogController.getBlogs);
 blogRouter.patch(
   '/:id',
-  auth('user'),
+  auth('user','admin'),
   validateRequest(blogValidation.blogValidationSchema),
   blogController.updateBlog,
 );
