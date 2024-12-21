@@ -27,7 +27,7 @@ const createBlog = catchAsync(async (req, res) => {
 const updateBlog = catchAsync(async (req, res) => {
   const blogId = req.params.id;
   const payload = req.body;
-  const result = await blogService.updateBlog(blogId, payload);
+  const result = await blogService.updateBlog(blogId, payload, req?.user as JwtPayload);
   const { _id, author: blogAuthor, content, title } = result;
   res.status(StatusCodes.OK).json({
     success: true,

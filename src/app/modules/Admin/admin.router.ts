@@ -8,8 +8,8 @@ adminRouter.patch(
     auth('admin'),
     adminController.blockUser
   );
-adminRouter.patch(
-    'blogs/:id',
+adminRouter.delete(
+    '/blogs/:id',
     auth('admin'),
     adminController.deleteBlog
   );

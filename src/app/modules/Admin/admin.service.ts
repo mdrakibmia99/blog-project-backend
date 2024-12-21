@@ -3,7 +3,7 @@ import AppError from "../../errors/AppError";
 import User from "../user/user.model";
 import Blog from "../Blog/blog.model";
 
-const deleteUser = async (
+const blockUser = async (
     userId: string,
   ) => {
     // check blog id from database
@@ -34,7 +34,7 @@ const deleteBlog = async (
     }else if(checkBlogId.isPublished===false){
       throw new AppError(StatusCodes.BAD_REQUEST, 'Blog already deleted');}
     // update blog id from database
-    const updateBlog = await User.findByIdAndUpdate(userId, {isBlocked:true}, {
+    const updateBlog = await Blog.findByIdAndUpdate(userId, {isBlocked:true}, {
       new: true,
     });
     // if blog not updated it show a error
@@ -44,6 +44,6 @@ const deleteBlog = async (
    
   };
   export const adminService = {
-    deleteUser,
+    blockUser,
     deleteBlog
   }

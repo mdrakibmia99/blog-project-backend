@@ -17,12 +17,26 @@ const createBlog = async (
 const updateBlog = async (
   blogId: string,
   payload: IBlog,
-): Promise<IBlogReturn> => {
+  loggedUser: JwtPayload,
+) => {
   // check blog id from database
-  const checkBlogId = await Blog.findById(blogId);
+  const checkBlogId = await Blog.findById(blogId).populate<{
+    author: { email: string; role: string };
+  }>('author');
   // if blog id not fount it show a error
   if (!checkBlogId) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Blog not found');
+  } else if (checkBlogId?.author?.email !== loggedUser.email) {
+    // check user
+    throw new AppError(
+      StatusCodes.UNAUTHORIZED,
+      'You are not authorized to update this blog',
+    );
+  } else if (checkBlogId?.isPublished === false) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      'You can not updated this blog.Blog already deleted',
+    );
   }
   // update blog id from database
   const updateBlog = await Blog.findByIdAndUpdate(blogId, payload, {
@@ -38,7 +52,6 @@ const updateBlog = async (
 };
 const deleteBlog = async (blogId: string, loggedUser: JwtPayload) => {
   // check blog id from database
-  console.log(loggedUser, 'loggedUserMail');
 
   const checkBlogId = await Blog.findById(blogId).populate<{
     author: { email: string; role: string };
@@ -75,8 +88,10 @@ const getBlogs = async (query: Record<string, unknown>) => {
   const blogs = new QueryBuilder(Blog.find().populate('author'), query)
     .search(searchableFields)
     .filter()
-    .sort()
-  const result = await blogs.modelQuery.select('_id title content author').lean();
+    .sort();
+  const result = await blogs.modelQuery
+    .select('_id title content author')
+    .lean();
 
   return result;
 };
