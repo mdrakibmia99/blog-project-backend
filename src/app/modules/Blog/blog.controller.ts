@@ -2,10 +2,13 @@ import catchAsync from '../../utils/catchAsync';
 import { blogService } from './blog.service';
 import AppError from '../../errors/AppError';
 import { StatusCodes } from 'http-status-codes';
+import { JwtPayload } from 'jsonwebtoken';
+import { Request, Response } from 'express';
+
 
 const createBlog = catchAsync(async (req, res) => {
   const data = req.body;
-  const author = req?.user?._id as string | undefined;
+  const author = req?.user as JwtPayload;
   if (!author) {
     throw new AppError(
       StatusCodes.UNAUTHORIZED,
@@ -35,7 +38,7 @@ const updateBlog = catchAsync(async (req, res) => {
 });
 const deleteBlog = catchAsync(async (req, res) => {
   const blogId = req.params.id;
-  const user =req?.user?.email
+  const user =req?.user as JwtPayload;
    await blogService.deleteBlog(blogId,user);
  
   res.status(StatusCodes.OK).json({
@@ -46,8 +49,21 @@ const deleteBlog = catchAsync(async (req, res) => {
   });
 });
 
+const getBlogs = catchAsync(async (req:Request, res:Response) => {
+  const queryData=req?.query;
+  console.log(queryData,"queryData")
+  const result = await blogService.getBlogs(queryData);
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Blogs fetched successfully',
+    statusCode: StatusCodes.OK,
+    data: result,
+  });
+})
+
 export const blogController = {
   createBlog,
   updateBlog,
   deleteBlog,
+  getBlogs,
 };

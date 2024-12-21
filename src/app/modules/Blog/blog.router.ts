@@ -5,7 +5,7 @@ import { blogValidation } from './blog.validation';
 import { blogController } from './blog.controller';
 
 const blogRouter = Router();
-
+blogRouter.get('/',blogController.getBlogs);
 blogRouter.patch(
   '/:id',
   auth('user'),
@@ -24,5 +24,6 @@ blogRouter.post(
   validateRequest(blogValidation.blogValidationSchema),
   blogController.createBlog,
 );
+
 
 export default blogRouter;

@@ -47,6 +47,7 @@ const login = async (payload: { email: string; password: string }) => {
     const jwtPayload = {
       email: user?.email,
       role: user?.role,
+      _id: user?._id,
     }
   
     const token = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn: config.jwt_access_expires_in as string });

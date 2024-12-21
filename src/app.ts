@@ -3,7 +3,7 @@ import cors from 'cors';
 import { globalErrorHandler } from './app/middlewares/globalErrorHandler';
 import router from './app/routes';
 import { StatusCodes } from 'http-status-codes';
-import auth from './app/middlewares/auth';
+
 const app: Application = express();
 
 // parser
@@ -15,7 +15,7 @@ app.use(cors());
 // all route
 app.use('/api', router);
 
-app.get('/',auth('user','admin'), (req, res) => {
+app.get('/', (req, res) => {
   res.json({ message: 'welcome to my backend project' });
 });
 app.use(globalErrorHandler);
