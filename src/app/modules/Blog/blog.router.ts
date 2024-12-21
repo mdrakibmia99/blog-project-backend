@@ -12,6 +12,11 @@ blogRouter.patch(
   validateRequest(blogValidation.blogValidationSchema),
   blogController.updateBlog,
 );
+blogRouter.delete(
+  '/:id',
+  auth('user','admin'),
+  blogController.deleteBlog,
+);
 
 blogRouter.post(
   '/',

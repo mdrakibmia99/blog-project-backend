@@ -15,7 +15,7 @@ app.use(cors());
 // all route
 app.use('/api', router);
 
-app.get('/',auth('user'), (req, res) => {
+app.get('/',auth('user','admin'), (req, res) => {
   res.json({ message: 'welcome to my backend project' });
 });
 app.use(globalErrorHandler);

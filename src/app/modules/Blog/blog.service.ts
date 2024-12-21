@@ -33,8 +33,39 @@ const updateBlog = async (
 
   return result;
 };
+const deleteBlog = async (blogId: string, loggedUserMail: string) => {
+  // check blog id from database
+  const checkBlogId = await Blog.findById(blogId).populate<{
+    author: { email: string; role: string };
+  }>('author');
+  console.log(checkBlogId, 'checkBlogId');
+  // if blog id not fount it show a error
+  if (!checkBlogId) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Blog not found');
+  } else if (
+    checkBlogId?.author?.email !== loggedUserMail &&
+    checkBlogId?.author.role === 'user'
+  ) {
+    console.log(checkBlogId?.author?.email,checkBlogId?.author?.role,loggedUserMail)
+    throw new AppError(
+      StatusCodes.UNAUTHORIZED,
+      'You are not authorized to delete this blog 2',
+    );
+  } else if (checkBlogId?.isPublished === false) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'Blog already deleted');
+  }
+  // update blog id from database
+  await Blog.findByIdAndUpdate(
+    blogId,
+    { isPublished: false },
+    {
+      new: true,
+    },
+  );
+};
 
 export const blogService = {
   createBlog,
   updateBlog,
+  deleteBlog,
 };

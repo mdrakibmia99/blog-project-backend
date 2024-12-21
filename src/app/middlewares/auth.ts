@@ -40,7 +40,8 @@ const auth = (...requiredRoles: TUserRole[]) => {
         'You are not allowed to access this route',
       );
     }
-    req.user = user;
+    req.user = decoded;
+    console.log(req.user,user, 'req.user');
     next();
   });
 };
