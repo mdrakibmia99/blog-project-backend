@@ -6,7 +6,7 @@ export const handleDuplicateError=(err:any,res:Response)=>{
   res.status(StatusCodes.CONFLICT).json({
     success: false,
     message: err.message,
-    statusCode: 400,
+    statusCode: StatusCodes.CONFLICT,
     error: err,
     stack: err.stack,
 });
